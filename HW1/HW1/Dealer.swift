@@ -43,6 +43,9 @@ class Dealer {
     convenience init() {
         var defaultCards = [Card]()
         for rank in Ranks.allCases {
+            if rank == .back {
+                continue
+            }
             for suit in Suits.allCases {
                 defaultCards.append(Card(rank: rank, suit: suit))
             }
