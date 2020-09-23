@@ -54,9 +54,8 @@ func playGame() {
     }
 }
 
+playGame()
 outer: while true {
-    playGame()
-
     print("+++++++++++++++++++++++++++++++++++++++++++++++")
     print("%%% Do you want to play another game? (y/n) %%%")
     let answer = readLine()
