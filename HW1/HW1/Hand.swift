@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum HandStatus {
+    case inGame
+    case blackjack
+    case lost
+}
+
 struct Hand {
     private static let MAX_POINTS = 21
 
@@ -26,8 +32,14 @@ struct Hand {
         }
     }
 
-    var inGame: Bool {
-        return points <= Hand.MAX_POINTS
+    var handStatus: HandStatus {
+        if points < Hand.MAX_POINTS {
+            return .inGame
+        } else if points == Hand.MAX_POINTS {
+            return .blackjack
+        } else {
+            return .lost
+        }
     }
 
     mutating func put(_ newCard: Card) {

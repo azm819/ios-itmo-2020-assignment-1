@@ -7,13 +7,33 @@
 
 import Foundation
 
+enum GameStatus {
+    case didNotStart
+    case continues
+    case playerWon
+    case dealerWon
+    case draw
+}
+
 class Dealer {
     private static let POINTS_BOUND = 17
 
-    private(set) var cardDeck: CardDeck
-    private(set) var hand = Hand()
+    private var cardDeck: CardDeck
+    private var dealerHand = Hand()
+    private var playerHand = Hand() {
+        didSet {
+            switch playerHand.handStatus {
+            case .inGame:
+                break
+            case .blackjack:
+                gameStatus = .playerWon
+            case .lost:
+                gameStatus = .dealerWon
+            }
+        }
+    }
 
-    private var gameIsBegan: Bool = false
+    private(set) var gameStatus: GameStatus = .didNotStart
 
     init(cards: [Card]) {
         self.cardDeck = CardDeck(cards: cards)
@@ -30,33 +50,47 @@ class Dealer {
         self.init(cards: defaultCards)
     }
 
-    func getCard() -> Card {
+    private func getCard() -> Card {
         guard !cardDeck.isEmpty else {
             return EMPTY_CARD
         }
         return cardDeck.getRandomCard() ?? EMPTY_CARD
     }
 
-    func beginGame() -> (Card, Card) {
-        guard !gameIsBegan else {
-            return (EMPTY_CARD, EMPTY_CARD)
+    func startGame() {
+        guard gameStatus == .didNotStart else {
+            return
         }
+        dealerHand.put(getCard())
+        dealerHand.put(getCard())
 
-        defer {
-            gameIsBegan = true
+        playerHand.put(getCard())
+        playerHand.put(getCard())
+
+        gameStatus = .continues
+    }
+    
+    func makeMove() {
+        guard gameStatus == .continues else {
+            return
         }
-        hand.put(getCard())
-        hand.put(getCard())
-
-        return (getCard(), getCard())
+        playerHand.put(getCard())
     }
 
     func finishGame() {
-        guard gameIsBegan else {
+        guard gameStatus == .continues else {
             return
         }
-        while hand.points < Dealer.POINTS_BOUND && !cardDeck.isEmpty {
-            hand.put(getCard())
+        while dealerHand.points < Dealer.POINTS_BOUND && !cardDeck.isEmpty {
+            dealerHand.put(getCard())
+        }
+        
+        if playerHand.points > dealerHand.points {
+            gameStatus = .playerWon
+        } else if playerHand.points == dealerHand.points {
+            gameStatus = .draw
+        } else {
+            gameStatus = .dealerWon
         }
     }
 
