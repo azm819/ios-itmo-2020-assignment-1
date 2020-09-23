@@ -18,6 +18,8 @@ struct Hand {
 
     private var cards = [Card]()
 
+    private let ownerName: String
+
     private(set) var points: Int = .zero {
         didSet {
             sumExceeded21 = sumExceeded21 || points > Hand.MAX_POINTS
@@ -40,6 +42,10 @@ struct Hand {
         } else {
             return .lost
         }
+    }
+
+    init(of name: String) {
+        self.ownerName = name
     }
 
     mutating func put(_ newCard: Card) {
@@ -89,6 +95,15 @@ struct Hand {
         for card in cards {
             points += points(of: card)
         }
+    }
+
+    func printHand() {
+        print("*******************")
+        print("\(ownerName)'s hand")
+        for card in cards {
+            print(card.character, terminator: " ")
+        }
+        print("\npoints: \(points)")
     }
 
 }

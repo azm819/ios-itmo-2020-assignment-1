@@ -8,6 +8,66 @@
 import Foundation
 
 func playGame() {
-    var dealer = Dealer()
-    
+    print("!!!!! NEW GAME !!!!!")
+    let dealer = Dealer()
+    dealer.startGame()
+
+    dealer.printDealerHand()
+    dealer.printPlayerHand()
+    outer: while dealer.gameStatus == .continues {
+        print("-----------------------------------------")
+        print("%%% Do you want to make a move? (y/n) %%%")
+        let answer = readLine()
+
+        switch answer {
+        case "y":
+            dealer.makeMove()
+            dealer.printPlayerHand()
+            break
+        case "n":
+            break outer
+        default:
+            continue
+        }
+    }
+
+    if dealer.gameStatus == .continues {
+        dealer.finishGame()
+    }
+    dealer.printDealerHand()
+    dealer.printPlayerHand()
+
+    switch dealer.gameStatus {
+    case .didNotStart:
+        break
+    case .continues:
+        break
+    case .playerWon:
+        print("You won!!!")
+        break
+    case .dealerWon:
+        print("You lost")
+        break
+    case .draw:
+        print("It's a draw")
+        break
+    }
+}
+
+outer: while true {
+    playGame()
+
+    print("+++++++++++++++++++++++++++++++++++++++++++++++")
+    print("%%% Do you want to play another game? (y/n) %%%")
+    let answer = readLine()
+
+    switch answer {
+    case "y":
+        playGame()
+        break
+    case "n":
+        break outer
+    default:
+        continue
+    }
 }

@@ -19,8 +19,8 @@ class Dealer {
     private static let POINTS_BOUND = 17
 
     private var cardDeck: CardDeck
-    private var dealerHand = Hand()
-    private var playerHand = Hand() {
+    private var dealerHand = Hand(of: "Dealer")
+    private var playerHand = Hand(of: "Player") {
         didSet {
             switch playerHand.handStatus {
             case .inGame:
@@ -50,6 +50,14 @@ class Dealer {
         self.init(cards: defaultCards)
     }
 
+    func printPlayerHand() {
+        playerHand.printHand()
+    }
+
+    func printDealerHand() {
+        dealerHand.printHand()
+    }
+
     private func getCard() -> Card {
         guard !cardDeck.isEmpty else {
             return EMPTY_CARD
@@ -69,7 +77,7 @@ class Dealer {
 
         gameStatus = .continues
     }
-    
+
     func makeMove() {
         guard gameStatus == .continues else {
             return
@@ -84,8 +92,8 @@ class Dealer {
         while dealerHand.points < Dealer.POINTS_BOUND && !cardDeck.isEmpty {
             dealerHand.put(getCard())
         }
-        
-        if playerHand.points > dealerHand.points {
+
+        if dealerHand.handStatus == .lost || playerHand.points > dealerHand.points {
             gameStatus = .playerWon
         } else if playerHand.points == dealerHand.points {
             gameStatus = .draw
