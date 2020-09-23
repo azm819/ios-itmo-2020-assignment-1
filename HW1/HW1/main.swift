@@ -17,9 +17,8 @@ func playGame() {
     outer: while dealer.gameStatus == .continues {
         print("-----------------------------------------")
         print("%%% Do you want to make a move? (y/n) %%%")
-        let answer = readLine()
 
-        switch answer {
+        switch readLine()?.lowercased() {
         case "y":
             dealer.makeMove()
             dealer.printPlayerHand()
@@ -58,9 +57,8 @@ playGame()
 outer: while true {
     print("+++++++++++++++++++++++++++++++++++++++++++++++")
     print("%%% Do you want to play another game? (y/n) %%%")
-    let answer = readLine()
 
-    switch answer {
+    switch readLine()?.lowercased() {
     case "y":
         playGame()
         break
